@@ -212,6 +212,8 @@ class SpeechManager {
             // Cancel any ongoing speech
             this.synthesis.cancel();
 
+            // Wait a bit for cancel to take effect
+            setTimeout(() => {
             const utterance = new SpeechSynthesisUtterance(text);
             
             // Configure voice
@@ -233,14 +235,18 @@ class SpeechManager {
                 console.error('Speech synthesis error:', event.error);
                 reject(new Error(`Speech synthesis error: ${event.error}`));
             };
+                utterance.onstart = () => {
+                    console.log('🔊 Speech synthesis started');
+                };
 
             try {
                 this.synthesis.speak(utterance);
-                console.log('Speech synthesis started');
+                    console.log('🔊 Speech synthesis queued');
             } catch (error) {
                 console.error('Error starting speech synthesis:', error);
                 reject(error);
             }
+            }, 100);
         });
     }
 

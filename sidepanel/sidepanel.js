@@ -549,30 +549,97 @@ class ChatbotApp {
         }, 3000);
     }
     async speakLastMessage() {
+        console.log('🔊 Speak Last button clicked');
+        
+        if (!window.speechManager.isSynthesisSupported()) {
+            this.showError('Speech synthesis is not supported in your browser');
+            return;
+        }
+
+        // Stop any current speech
+        if (window.speechManager.isSpeaking()) {
+            console.log('🔊 Stopping current speech');
+            window.speechManager.stopSpeaking();
+            this.elements.speakBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11,5 6,9 2,9 2,15 6,15 11,19 11,5"/>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </svg>
+                Speak Last
+            `;
+            return;
+        }
+
         const messages = this.elements.chatMessages.querySelectorAll('.message.assistant .message-content');
+        console.log('🔊 Found assistant messages:', messages.length);
+        
         if (messages.length === 0) {
-            alert('No assistant messages to speak');
+            this.showError('No assistant messages to speak');
             return;
         }
 
         const lastMessage = messages[messages.length - 1];
-        const text = lastMessage.textContent.replace(/^.*?(Vision)?/, '').trim();
+        
+        // Extract text content, excluding model indicator
+        let text = '';
+        const textNodes = lastMessage.childNodes;
+        for (let node of textNodes) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                text += node.textContent;
+            } else if (node.tagName && !node.classList.contains('model-indicator')) {
+                text += node.textContent;
+            }
+        }
+        
+        // Clean up the text
+        text = text.trim()
+            .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+            .replace(/\n+/g, ' '); // Replace newlines with spaces
+        
+        console.log('🔊 Text to speak:', text.substring(0, 100) + '...');
 
         if (!text) {
-            alert('No text to speak');
+            this.showError('No text content found to speak');
             return;
         }
 
         try {
-            if (window.speechManager.isSpeaking()) {
-                window.speechManager.stopSpeaking();
-                return;
-            }
+            // Update button to show speaking state
+            this.elements.speakBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="6" y="4" width="4" height="16"/>
+                    <rect x="14" y="4" width="4" height="16"/>
+                </svg>
+                Stop Speaking
+            `;
+            this.elements.speakBtn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
 
             await window.speechManager.speak(text);
+            
+            // Reset button after speaking
+            this.elements.speakBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11,5 6,9 2,9 2,15 6,15 11,19 11,5"/>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </svg>
+                Speak Last
+            `;
+            this.elements.speakBtn.style.background = '';
+            
+            this.showSuccess('Message spoken successfully');
         } catch (error) {
-            console.error('Speech synthesis error:', error);
-            alert(`Speech error: ${error.message}`);
+            console.error('🔊 Speech synthesis error:', error);
+            this.showError(`Speech error: ${error.message}`);
+            
+            // Reset button on error
+            this.elements.speakBtn.innerHTML = `
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11,5 6,9 2,9 2,15 6,15 11,19 11,5"/>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </svg>
+                Speak Last
+            `;
+            this.elements.speakBtn.style.background = '';
         }
     }
 
