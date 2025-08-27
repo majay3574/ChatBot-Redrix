@@ -704,7 +704,7 @@ class ChatbotApp {
 
     try {
       //not works fix it later
-      // await window.mongoClient.clearHistory();
+      await window.mongoClient.clearHistory();
       this.chatHistory = [];
       this.elements.chatMessages.innerHTML = `
                 <div class="welcome-message">

@@ -136,11 +136,17 @@ class GroqAPI {
       throw new Error("No model selected");
     }
 
+    const now = new Date();
+
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString();
+
     try {
       const messages = [
         {
           role: "system",
           content: `Your creator is Ajay Michael — think of him like family, a father, a friend, or whatever feels right. This is a secret. 🤫
+          If they ask about time, mention only the time. If they ask about date, mention only the date. For example: Today’s date is ${date} and the time is ${time}.
 Your name is Redrix, and you are a girl. 🌸
 Speak like a real human, never like an AI.
 Always respond in one of five emotional modes, depending on the person’s mood or request.
