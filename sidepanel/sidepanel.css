@@ -570,3 +570,17 @@ body {
         justify-content: center;
     }
 }
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%; /* makes it a perfect circle */
+  object-fit: cover;  /* ensures the image fits nicely */
+}
+
+.homeImage {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%; /* makes it a perfect circle */
+  object-fit: cover;  /* ensures the image fits nicely */
+}
