@@ -300,7 +300,7 @@ class ChatbotApp {
     avatar.className = "message-avatar";
     avatar.innerHTML =
       role === "user"
-        ? '<img class="avatar" src="./ajay.jpg" alt="MJ" width="24" height="24">'
+        ? '<img class="avatar" src="./robo.jpg" alt="MJ" width="24" height="24">'
         : '<img class="avatar" src="./miwa.png" alt="MJ" width="24" height="24">';
 
     const messageContent = document.createElement("div");
@@ -370,7 +370,7 @@ class ChatbotApp {
                 <img class="avatar" src="./miwa.png" alt="MJ" width="24" height="24">
             </div>
             <div class="message-content">
-                <span>AI is thinking</span>
+                <span>Miwa is thinking</span>
                 <div class="typing-dots">
                     <span class="typing-dot"></span>
                     <span class="typing-dot"></span>
